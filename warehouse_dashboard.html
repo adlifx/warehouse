@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .section-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .section-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-card i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .section-card h4 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Specific Colors for Each Section */
+        .section-users { background-color: #4fd5d6; }
+        .section-products { background-color: #7cb1ff; }
+        .section-categories { background-color: #75787b; }
+        .section-orders { background-color: #ffe168; }
+        .section-deliveries { background-color: #ff6f6f; }
+        .section-stock { background-color: #d19ef3; }
+        .section-customers { background-color: #76c7f0; }
+        .section-receptions { background-color: #728fa3; }
+        .section-returns { background-color: #ec6eb1; }
+        .section-reports { background-color: #5b6977; }
+        .section-transfers { background-color: #6ccf91; }
+        .section-suppliers { background-color: #ffa056; }
+        .section-warehouse { background-color: #a8d3d1; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Dashboard - <span id="warehouse-name">Warehouse Name</span>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-sections">
+            <div class="section-card section-warehouse" onclick="navigateTo('dashboard_admin.html')">
+                <i class="fas fa-warehouse"></i>
+                <h4>Warehouse</h4>
+            </div>
+            <div class="section-card section-users" onclick="navigateTo('users.html')">
+                <i class="fas fa-user"></i>
+                <h4>Users</h4>
+            </div>
+            <div class="section-card section-products" onclick="navigateTo('products.html')">
+                <i class="fas fa-barcode"></i>
+                <h4>Products</h4>
+            </div>
+            <div class="section-card section-categories" onclick="navigateTo('categories.html')">
+                <i class="fas fa-sitemap"></i>
+                <h4>Categories</h4>
+            </div>
+            <div class="section-card section-orders" onclick="navigateTo('orders.html')">
+                <i class="fas fa-file-alt"></i>
+                <h4>Orders</h4>
+            </div>
+            <div class="section-card section-deliveries" onclick="navigateTo('deliveries.html')">
+                <i class="fas fa-truck"></i>
+                <h4>Deliveries</h4>
+            </div>
+            <div class="section-card section-stock" onclick="navigateTo('stock.html')">
+                <i class="fas fa-boxes"></i>
+                <h4>Stock</h4>
+            </div>
+            <div class="section-card section-customers" onclick="navigateTo('customers.html')">
+                <i class="fas fa-id-badge"></i>
+                <h4>Customers</h4>
+            </div>
+            <div class="section-card section-receptions" onclick="navigateTo('receptions.html')">
+                <i class="fas fa-download"></i>
+                <h4>Receptions</h4>
+            </div>
+            <div class="section-card section-returns" onclick="navigateTo('returns.html')">
+                <i class="fas fa-undo"></i>
+                <h4>Returns</h4>
+            </div>
+            <div class="section-card section-reports" onclick="navigateTo('reports.html')">
+                <i class="fas fa-chart-bar"></i>
+                <h4>Reports</h4>
+            </div>
+            <div class="section-card section-transfers" onclick="navigateTo('transfers.html')">
+                <i class="fas fa-exchange-alt"></i>
+                <h4>Transfers</h4>
+            </div>
+            <div class="section-card section-suppliers" onclick="navigateTo('suppliers.html')">
+                <i class="fas fa-address-book"></i>
+                <h4>Suppliers</h4>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the selected warehouse from localStorage
+        const selectedWarehouse = JSON.parse(localStorage.getItem("selectedWarehouse"));
+        const warehouseName = selectedWarehouse ? selectedWarehouse.name : "Unknown";
+
+        // Display the warehouse name
+        document.getElementById("warehouse-name").textContent = warehouseName;
+
+        // Navigation function
+        function navigateTo(page) {
+            window.location.href = page; // Redirects to the specified page
+        }
+    </script>
+</body>
+</html>
