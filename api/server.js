@@ -1,41 +1,46 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+const xlsx = require("xlsx");
+const path = require("path");
 const fs = require("fs");
-const XLSX = require("xlsx");
 
-const app = express();
-const PORT = 3000;
+const filePath = path.resolve("./public/products.xlsx");
 
-app.use(bodyParser.json());
-app.use(express.static("public")); // Serve the HTML and frontend files
+const readExcelFile = () => {
+    const workbook = xlsx.readFile(filePath);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    return xlsx.utils.sheet_to_json(worksheet);
+};
 
-// API to get product data from Excel
-app.get("/api/products", (req, res) => {
-    const workbook = XLSX.readFile("products.xlsx");
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
-    res.json(data);
-});
+const writeExcelFile = (data) => {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(data);
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Products");
+    xlsx.writeFile(workbook, filePath);
+};
 
-// API to delete a product from the Excel file
-app.post("/api/delete-product", (req, res) => {
-    const { id } = req.body;
-
-    const workbook = XLSX.readFile("products.xlsx");
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    let data = XLSX.utils.sheet_to_json(sheet);
-
-    // Filter out the product with the given ID
-    data = data.filter((product) => product.ID !== id);
-
-    // Write updated data back to the Excel file
-    const newSheet = XLSX.utils.json_to_sheet(data);
-    workbook.Sheets[workbook.SheetNames[0]] = newSheet;
-    XLSX.writeFile(workbook, "products.xlsx");
-
-    res.json({ success: true, message: "Product deleted successfully" });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = async (req, res) => {
+    try {
+        if (req.method === "GET") {
+            // Fetch all products
+            const data = readExcelFile();
+            res.status(200).json(data);
+        } else if (req.method === "DELETE") {
+            // Delete product
+            const id = parseInt(req.query.id, 10);
+            const data = readExcelFile();
+            const newData = data.filter((item) => item.ID !== id);
+            writeExcelFile(newData);
+            res.status(200).json({ success: true, message: "Product deleted successfully" });
+        } else if (req.method === "POST") {
+            // Add new product
+            const newProduct = req.body;
+            const data = readExcelFile();
+            data.push(newProduct);
+            writeExcelFile(data);
+            res.status(200).json({ success: true, message: "Product added successfully" });
+        } else {
+            res.status(405).json({ error: "Method not allowed" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};

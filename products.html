@@ -177,12 +177,8 @@
 
         // Function to load product data from an Excel file
         async function loadProductData() {
-            const response = await fetch('products.xlsx'); // Replace with the path to your Excel file
-            const data = await response.arrayBuffer();
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            products = XLSX.utils.sheet_to_json(firstSheet); // Update the global products array
-
+            const response = await fetch("/api/products");
+            products = await response.json();
             renderTable();
         }
 
@@ -223,10 +219,19 @@
             });
         });
 
-        // Delete a product from the table
-        function deleteProduct(index) {
-            products.splice(index, 1); // Remove the product from the array
-            renderTable(); // Re-render the table
+        async function deleteProduct(index) {
+            const productId = products[index].ID;
+            const response = await fetch(`/api/products?id=${productId}`, {
+                method: "DELETE",
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                loadProductData(); // Reload the table
+            } else {
+                alert("Error deleting product");
+            }
         }
 
         // Download the updated Excel file
